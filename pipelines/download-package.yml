@@ -1,0 +1,24 @@
+trigger: none
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+
+- task: UniversalPackages@0
+  displayName: 'Download Universal Package'
+  inputs:
+    command: 'download'
+    feedsToUse: 'internal'
+    vstsFeed: 'project/newfeed'
+    vstsFeedPackage: 'cloudnautic-app'
+    vstsPackageVersion: '1.0.1'
+    downloadDirectory: '$(Build.SourcesDirectory)/downloaded-package'
+
+- script: |
+    echo "Downloaded package:"
+    ls -la $(Build.SourcesDirectory)/downloaded-package
+
+    echo "Package files:"
+    find $(Build.SourcesDirectory)/downloaded-package -type f
+  displayName: 'Verify Package'

@@ -1,0 +1,34 @@
+trigger:
+  - main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  packageName: 'cloudnautic-app'
+  packageVersion: '1.0.$(Build.BuildId)'
+  feedName: 'newfeed'
+
+steps:
+
+- script: |
+    echo "Azure Artifacts Universal Package"
+    echo "Package: $(packageName)"
+    echo "Version: $(packageVersion)"
+    echo "Feed: $(feedName)"
+
+    echo "Package contents:"
+    ls -la package
+  displayName: 'Check Package'
+
+- task: UniversalPackages@0
+  displayName: 'Publish Universal Package'
+  inputs:
+    command: 'publish'
+    publishDirectory: '$(Build.SourcesDirectory)/package'
+    feedsToUsePublish: 'internal'
+    vstsFeedPublish: '$(feedName)'
+    vstsFeedPackagePublish: '$(packageName)'
+    versionOption: 'custom'
+    versionPublish: '$(packageVersion)'
+    packagePublishDescription: 'Universal package published from Azure Pipeline'
